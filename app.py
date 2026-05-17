@@ -1,36 +1,38 @@
-from bl.user import UserManager
-from ui.login_ui import handle_login_menu
-from ui.exam_ui import run_exam
-from ui.question_settings_ui import handle_question_settings
+import streamlit as st
 
-def main():
-    user_manager = UserManager()
-    current_user = None
+st.set_page_config(page_title="Flashcards", page_icon="📚")
 
-    while True:
-        if not current_user:
-            current_user = handle_login_menu(user_manager)
-            if current_user is None: 
-                break
+st.title("📚 Flashcards App")
+
+menu = st.sidebar.selectbox(
+    "เลือกเมนู",
+    ["หน้าแรก", "ทำแบบทดสอบ", "ตั้งค่าคำถาม"]
+)
+
+if menu == "หน้าแรก":
+    st.header("ยินดีต้อนรับ")
+    st.write("ระบบ Flashcards")
+
+elif menu == "ทำแบบทดสอบ":
+    st.header("ทำแบบทดสอบ")
+
+    question = "Python ใช้คำสั่งอะไรแสดงผล?"
+
+    st.write(question)
+
+    answer = st.text_input("คำตอบ")
+
+    if st.button("ส่งคำตอบ"):
+        if answer.lower() == "print":
+            st.success("ถูกต้อง 🎉")
         else:
-            print(f"\nรหัสนักศึกษา: {current_user.student_id}")
-            print("\n--- เมนู ---")
-            print("1. ทำแบบทดสอบ")
-            print("2. ตั้งค่าคำถาม")    
-            print("3. ล็อกเอ้า")
-            choice = input("เลือกเมนู: ")
+            st.error("ผิด ❌")
 
-            if choice == "1":  # ทำแบบทดสอบ
-                question_manager = current_user.get_question_manager()
-                run_exam(question_manager)
-            elif choice == "2":  # ตั้งค่าคำถาม
-                question_manager = current_user.get_question_manager()
-                handle_question_settings(question_manager)
-            elif choice == "3":  # ล็อกเอ้า
-                print("ล็อกเอ้า...")
-                current_user = None
-            else:
-                print("กรุณาเลือกเมนูที่ถูกต้อง")
-                
-if __name__ == "__main__":
-    main()
+elif menu == "ตั้งค่าคำถาม":
+    st.header("ตั้งค่าคำถาม")
+
+    question = st.text_input("เพิ่มคำถาม")
+    answer = st.text_input("เพิ่มคำตอบ")
+
+    if st.button("บันทึก"):
+        st.success("บันทึกสำเร็จ")
